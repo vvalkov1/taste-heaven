@@ -1,30 +1,46 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+	<div class="app">
+		<header class="h-16 mb-10 bg-slate-600 flex items-center justify-center">
+			<h1 class="font-bold text-lg">Taste Heaven</h1>
+		</header>
+		<AddDish @add-dish="addDish" />
+		<DishFilter @filter-dishes="filterDishes" />
+		<DishList :dishes="filteredDishes" @delete-dish="deleteDish" />
+	</div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup>
+import { ref, computed } from 'vue';
+import AddDish from './components/AddDish.vue';
+import DishFilter from './components/DishFilter.vue';
+import DishList from './components/DishList.vue';
+
+const dishes = ref([]);
+const filterTerm = ref('');
+
+// Method to add a new dish
+function addDish(newDish) {
+	dishes.value.push(newDish);
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+// Method to filter dishes by name
+function filterDishes(term) {
+	filterTerm.value = term;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+// Filtered dishes based on the filter term
+const filteredDishes = computed(() =>
+	dishes.value.filter((dish) =>
+		dish.name.toLowerCase().includes(filterTerm.value.toLowerCase()),
+	),
+);
+
+// Method to delete a dish
+function deleteDish(id) {
+	dishes.value = dishes.value.filter((dish) => dish.id !== id);
 }
+</script>
+
+<style>
+/* Add basic styling or use TailwindCSS if preferred */
 </style>
